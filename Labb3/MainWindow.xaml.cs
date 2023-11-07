@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Windows;
 using Labb3ProgTemplate.Managerrs;
 
 namespace Labb3ProgTemplate
@@ -10,8 +12,12 @@ namespace Labb3ProgTemplate
     {
         public MainWindow()
         {
+            UserManager.LoadUsersFromFile();
+            
             InitializeComponent(); 
             UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
+
+            UserManager.SaveUsersToFile();
         }
 
         private void UserManager_CurrentUserChanged()
