@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Labb3ProgTemplate.DataModels.Products;
+using Labb3ProgTemplate.DataModels.Users;
 
 namespace Labb3ProgTemplate.Managerrs;
 
@@ -15,7 +17,10 @@ public static class ProductManager
 
     public static void AddProduct(Product product)
     {
-        throw new NotImplementedException();
+        if (_products is List<Product> users)
+        {
+            users.Add(product);
+        }
     }
 
     public static void RemoveProduct(Product product)
