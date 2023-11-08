@@ -6,7 +6,7 @@ public abstract class User
 {
     public string Name { get; }
 
-    private string Password { get; }
+    public string Password { get; }
 
     public abstract UserTypes Type { get; }
 
