@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using Labb3ProgTemplate.DataModels.Users;
 using Labb3ProgTemplate.Enums;
 
@@ -39,12 +40,48 @@ public static class UserManager
 
     public static void ChangeCurrentUser(string name, string password, UserTypes type)
     {
-        throw new NotImplementedException();
+        User user = Users.FirstOrDefault(u => u.Name == name && u.Password == password && u.Type == type);
+
+        if (user != null)
+        {
+            CurrentUser = user;
+
+        }
+
     }
 
     public static void LogOut()
     {
-        throw new NotImplementedException();
+        
+    }
+
+    public static bool AddCustomer(Customer customer)
+    {
+        if (_users is List<User> users)
+        {
+            
+            if (users.Any(existingUser => existingUser.Name == customer.Name))
+            {
+                MessageBox.Show("Username already taken!");
+                return false;
+            }
+            users.Add(customer);
+        }
+        return true;
+    }
+
+    public static bool AddAdmin(Admin admin)
+    {
+        if (_users is List<User> users)
+        {
+            if (users.Any(existingUser => existingUser.Name == admin.Name))
+            {
+                MessageBox.Show("Username already taken!");
+                return false;
+            }
+            users.Add(admin);
+        }
+        return true;
     }
 
     public static async Task SaveUsersToFile()
@@ -55,12 +92,14 @@ public static class UserManager
         var jsonOptions = new JsonSerializerOptions();
         jsonOptions.WriteIndented = true;
 
-        var json = JsonSerializer.Serialize(Users, jsonOptions);
+        
+        var distinctUsers = Users.GroupBy(u => u.Name).Select(g => g.First()).ToList();
+        var json = JsonSerializer.Serialize(distinctUsers, jsonOptions);
 
         using var sw = new StreamWriter(usersFilePath);
         sw.WriteLine(json);
-
     }
+
 
     public static async Task LoadUsersFromFile()
     {
@@ -68,27 +107,50 @@ public static class UserManager
         Directory.CreateDirectory(directory);
         var usersListsFilePath = Path.Combine(directory, "UsersList.json");
 
-        using (var jsonDoc = JsonDocument.Parse(usersListsFilePath))
+        if (File.Exists(usersListsFilePath))
         {
+            var jsonContent = File.ReadAllText(usersListsFilePath);
+            using var jsonDoc = JsonDocument.Parse(jsonContent);
+
             if (jsonDoc.RootElement.ValueKind == JsonValueKind.Array)
             {
                 foreach (var jsonElement in jsonDoc.RootElement.EnumerateArray())
                 {
-                    User a;
-                    switch (jsonElement.GetProperty("Type").GetString())
+                    if (jsonElement.TryGetProperty("Type", out var typeProperty) && typeProperty.ValueKind == JsonValueKind.Number)
                     {
-                        case nameof(Admin):
-                            a = jsonElement.Deserialize<Admin>();
-                            Users.ToList().Add(a);
-                            break;
-                        case nameof(Customer):
-                            a = jsonElement.Deserialize<Customer>();
-                            Users.ToList().Add(a);
-                            break;
+                        int userTypeValue = typeProperty.GetInt32();
+                        User a;
+
+                        UserTypes userType = (UserTypes)userTypeValue;
+
+                        switch (userType)
+                        {
+                            case UserTypes.Admin:
+                                a = jsonElement.Deserialize<Admin>();
+                                if (_users is List<User> userAdmin)
+                                {
+                                    userAdmin.Add(a);
+                                }
+                                break;
+                            case UserTypes.Customer:
+                                a = jsonElement.Deserialize<Customer>();
+                                if (_users is List<User> userCustomer)
+                                {
+                                    userCustomer.Add(a);
+                                }
+                                break;
+                            default:
+                                MessageBox.Show($"Unknown user type: {userType}");
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Type property not found or not a number in JSON element");
                     }
                 }
             }
-
         }
     }
+
 }

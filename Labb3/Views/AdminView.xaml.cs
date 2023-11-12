@@ -10,8 +10,12 @@ namespace Labb3ProgTemplate.Views
     /// </summary>
     public partial class AdminView : UserControl
     {
+        
+
         public AdminView()
         {
+            DataContext = this;
+
             InitializeComponent();
             UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
         }
@@ -23,7 +27,7 @@ namespace Labb3ProgTemplate.Views
         
         private void ProdList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void SaveBtn_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -33,7 +37,7 @@ namespace Labb3ProgTemplate.Views
 
             if (!string.IsNullOrEmpty(productName) || !string.IsNullOrEmpty(productPrice))
             {
-                var product = new Fruit(productName, double.Parse(productPrice));
+                var product = new Food(productName, double.Parse(productPrice));
                 ProductManager.AddProduct(product);
             }
 
@@ -42,7 +46,7 @@ namespace Labb3ProgTemplate.Views
 
         private void RemoveBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void LogoutBtn_Click(object sender, System.Windows.RoutedEventArgs e)
