@@ -12,12 +12,9 @@ namespace Labb3ProgTemplate
     {
         public MainWindow()
         {
-            UserManager.LoadUsersFromFile();
             
             InitializeComponent(); 
             UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
-
-            UserManager.SaveUsersToFile();
         }
 
         private void UserManager_CurrentUserChanged()
