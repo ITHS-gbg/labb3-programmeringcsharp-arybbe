@@ -30,7 +30,10 @@
             Name="ProdList"
             Grid.Row="2"
             Grid.Column="1"
-            SelectionChanged="ProdList_OnSelectionChanged" />
+            DisplayMemberPath="{Binding Name}"
+            ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+            SelectionChanged="ProdList_OnSelectionChanged"
+            SelectionMode="Single" />
         <Button
             Name="RemoveBtn"
             Grid.Row="3"
@@ -58,7 +61,8 @@
             <TextBox
                 Name="ProductName"
                 Grid.Row="0"
-                Grid.Column="1" />
+                Grid.Column="1"
+                Text="{Binding Path=ProdName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <Label
                 Grid.Row="1"
                 Grid.Column="0"
@@ -66,7 +70,8 @@
             <TextBox
                 Name="ProductPrice"
                 Grid.Row="1"
-                Grid.Column="1" />
+                Grid.Column="1"
+                Text="{Binding Path=ProdPrice, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             <Button
                 Name="SaveBtn"
                 Grid.Row="2"

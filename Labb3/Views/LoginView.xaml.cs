@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using Labb3ProgTemplate.DataModels.Users;
+using Labb3ProgTemplate.Enums;
 using Labb3ProgTemplate.Managerrs;
 
 namespace Labb3ProgTemplate.Views
@@ -22,17 +23,52 @@ namespace Labb3ProgTemplate.Views
 
         private void UserManager_CurrentUserChanged()
         {
-            throw new NotImplementedException();
+            
         }
 
         private void LoginBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (UserManager.Users is List<User> users)
+            {
+                var foundUser = users.FirstOrDefault(user => user.Name == LoginName.Text);
+
+                if (foundUser != null)
+                {
+                    if (!foundUser.Authenticate(LoginPwd.Password))
+                    {
+                        MessageBox.Show("Wrong password, try again!");
+                        LoginName.Text = string.Empty;
+                        LoginPwd.Password = string.Empty;
+                        return;
+                    }
+                    var userType = foundUser.Type;
+
+                    UserManager.ChangeCurrentUser(LoginName.Text, LoginPwd.Password, userType);
+                    
+                }
+                else
+                {
+                    MessageBox.Show("User doesn't exist, try something else or register!");
+                }
+
+                LoginName.Text = string.Empty;
+                LoginPwd.Password = string.Empty;
+            }
         }
 
         private void RegisterAdminBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            string username = RegisterName.Text;
+            string password = RegisterPwd.Password;
+
+            if (!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password))
+            {
+                var admin = new Admin(username, password);
+                UserManager.AddAdmin(admin);
+
+                RegisterName.Text = string.Empty;
+                RegisterPwd.Password = string.Empty;
+            }
         }
 
         private void RegisterCustomerBtn_OnClickmerBtn_Click(object sender, RoutedEventArgs e)
@@ -42,11 +78,8 @@ namespace Labb3ProgTemplate.Views
 
             if (!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password))
             {
-                if (UserManager.Users is List<User> users)
-                {
-                    users.Add(new Customer(username, password));
-                }
-                UserManager.SaveUsersToFile();
+                var customer = new Customer(username, password);
+                UserManager.AddCustomer(customer);
 
                 RegisterName.Text = string.Empty;
                 RegisterPwd.Password = string.Empty;

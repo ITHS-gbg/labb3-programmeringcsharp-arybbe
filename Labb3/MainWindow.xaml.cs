@@ -12,25 +12,39 @@ namespace Labb3ProgTemplate
     {
         public MainWindow()
         {
-            
-            InitializeComponent(); 
+            InitializeComponent();
+            AdminTab.Visibility = Visibility.Collapsed;
+            ShopTab.Visibility = Visibility.Collapsed;
+            LoginTab.Visibility = Visibility.Visible;
             UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
+
+            UserManager.SaveUsersToFile();
         }
 
         private void UserManager_CurrentUserChanged()
         {
             if (UserManager.IsAdminLoggedIn)
             {
+                AdminTab.IsSelected = true;
                 AdminTab.Visibility = Visibility.Visible;
                 ShopTab.Visibility = Visibility.Visible;
                 LoginTab.Visibility = Visibility.Collapsed;
             }
             else
             {
+                ShopTab.IsSelected = true;
                 ShopTab.Visibility = Visibility.Visible;
                 AdminTab.Visibility = Visibility.Collapsed;
                 LoginTab.Visibility = Visibility.Collapsed;
             }
+        }
+
+        private void UserManager_UserLoggedOut()
+        {
+            LoginTab.IsSelected = true;
+            LoginTab.Visibility = Visibility.Visible;
+            ShopTab.Visibility = Visibility.Collapsed;
+            AdminTab.Visibility = Visibility.Collapsed;
         }
     }
 }
