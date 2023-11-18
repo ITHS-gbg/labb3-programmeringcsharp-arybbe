@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using Labb3ProgTemplate.DataModels.Users;
+using Labb3ProgTemplate.Enums;
 using Labb3ProgTemplate.Managerrs;
 
 namespace Labb3ProgTemplate.Views
@@ -17,7 +20,7 @@ namespace Labb3ProgTemplate.Views
 
         private void UserManager_CurrentUserChanged()
         {
-            throw new NotImplementedException();
+            
         }
 
         private void RemoveBtn_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -32,7 +35,12 @@ namespace Labb3ProgTemplate.Views
 
         private void LogoutBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (UserManager.CurrentUser.Type is UserTypes.Admin)
+            {
+                MessageBox.Show("You're not a customer! Log out from Admin view!");
+                return;
+            }
+            UserManager.LogOut();
         }
 
         private void CheckoutBtn_Click(object sender, System.Windows.RoutedEventArgs e)

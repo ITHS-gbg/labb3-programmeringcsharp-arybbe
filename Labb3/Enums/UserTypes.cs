@@ -3,5 +3,6 @@
 public enum UserTypes
 {
     Admin,
-    Customer
+    Customer,
+    MainMenu
 }

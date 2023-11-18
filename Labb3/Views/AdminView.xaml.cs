@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using Labb3ProgTemplate.DataModels.Products;
+using Labb3ProgTemplate.Enums;
 using Labb3ProgTemplate.Managerrs;
 
 namespace Labb3ProgTemplate.Views
@@ -22,7 +24,7 @@ namespace Labb3ProgTemplate.Views
 
         private void UserManager_CurrentUserChanged()
         {
-            throw new NotImplementedException();
+            
         }
         
         private void ProdList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -51,7 +53,7 @@ namespace Labb3ProgTemplate.Views
 
         private void LogoutBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            UserManager.LogOut();
         }
     }
 }

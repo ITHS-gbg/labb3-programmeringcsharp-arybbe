@@ -34,14 +34,25 @@ namespace Labb3ProgTemplate.Views
 
                 if (foundUser != null)
                 {
+                    if (!foundUser.Authenticate(LoginPwd.Password))
+                    {
+                        MessageBox.Show("Wrong password, try again!");
+                        LoginName.Text = string.Empty;
+                        LoginPwd.Password = string.Empty;
+                        return;
+                    }
                     var userType = foundUser.Type;
 
                     UserManager.ChangeCurrentUser(LoginName.Text, LoginPwd.Password, userType);
+                    
                 }
                 else
                 {
                     MessageBox.Show("User doesn't exist, try something else or register!");
                 }
+
+                LoginName.Text = string.Empty;
+                LoginPwd.Password = string.Empty;
             }
         }
 

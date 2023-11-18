@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using Labb3ProgTemplate.DataModels.Products;
 using Labb3ProgTemplate.DataModels.Users;
+using Labb3ProgTemplate.Enums;
 
 namespace Labb3ProgTemplate.Managerrs;
 
@@ -46,39 +48,68 @@ public static class ProductManager
         var jsonOptions = new JsonSerializerOptions();
         jsonOptions.WriteIndented = true;
 
-        var json = JsonSerializer.Serialize(Products, jsonOptions);
+
+        var distinctProducts = Products.GroupBy(p => p.Name).Select(g => g.First()).ToList();
+        var json = JsonSerializer.Serialize(distinctProducts, jsonOptions);
 
         using var sw = new StreamWriter(productsFilePath);
         sw.WriteLine(json);
+        ProductListChanged.Invoke();
+        await UserManager.SaveUsersToFile();
     }
 
     public static async Task LoadProductsFromFile()
     {
-        var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Labb 3 Listor");
-        Directory.CreateDirectory(directory);
-        var productsListsFilePath = Path.Combine(directory, "ProductsList.json");
+        
+            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Labb 3 Listor");
+            Directory.CreateDirectory(directory);
+            var productsFilePath = Path.Combine(directory, "ProductsList.json");
 
-        using (var jsonDoc = JsonDocument.Parse(productsListsFilePath))
-        {
-            if (jsonDoc.RootElement.ValueKind == JsonValueKind.Array)
+            if (File.Exists(productsFilePath))
             {
-                foreach (var jsonElement in jsonDoc.RootElement.EnumerateArray())
+                var jsonContent = File.ReadAllText(productsFilePath);
+                using var jsonDoc = JsonDocument.Parse(jsonContent);
+
+                if (jsonDoc.RootElement.ValueKind == JsonValueKind.Array)
                 {
-                    Product a;
-                    switch (jsonElement.GetProperty("Type").GetString())
+                    foreach (var jsonElement in jsonDoc.RootElement.EnumerateArray())
                     {
-                        case nameof(Food):
-                            a = jsonElement.Deserialize<Food>();
-                            Products.ToList().Add(a);
-                            break;
-                        case nameof(Electronic):
-                            a = jsonElement.Deserialize<Electronic>();
-                            Products.ToList().Add(a);
-                            break;
+                        if (jsonElement.TryGetProperty("Type", out var typeProperty) && typeProperty.ValueKind == JsonValueKind.String)
+                        {
+                            string productType = typeProperty.GetString();
+                            Product a;
+
+                            switch (productType)
+                            {
+                                case nameof(Food):
+                                    a = jsonElement.Deserialize<Food>();
+                                    if (_products is List<Product> foodList)
+                                    {
+                                        foodList.Add(a);
+                                    }
+                                    break;
+                                case nameof(Electronic):
+                                    a = jsonElement.Deserialize<Electronic>();
+                                    if (_products is List<Product> elecList)
+                                    {
+                                        elecList.Add(a);
+                                    }
+                                    break;
+                                default:
+                                    MessageBox.Show($"Unknown product type: {productType}");
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Type property not found or not a string in JSON element");
+                        }
                     }
                 }
             }
+            ProductListChanged.Invoke();
+            await UserManager.LoadUsersFromFile();
+        
 
-        }
     }
 }
