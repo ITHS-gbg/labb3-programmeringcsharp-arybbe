@@ -54,7 +54,7 @@ public static class ProductManager
 
         using var sw = new StreamWriter(productsFilePath);
         sw.WriteLine(json);
-        ProductListChanged.Invoke();
+        
         await UserManager.SaveUsersToFile();
     }
 
@@ -107,7 +107,7 @@ public static class ProductManager
                     }
                 }
             }
-            ProductListChanged.Invoke();
+            
             await UserManager.LoadUsersFromFile();
         
 

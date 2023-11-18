@@ -104,7 +104,7 @@ public static class UserManager
         using var sw = new StreamWriter(usersFilePath);
         sw.WriteLine(json);
 
-        UserListChanged.Invoke();
+        
         await ProductManager.SaveProductsToFile();
     }
 
@@ -150,13 +150,13 @@ public static class UserManager
                                     break;
                                 default:
                                     MessageBox.Show($"Unknown user type: {userType}");
-                                    continue; // Skip to the next iteration
+                                    continue; 
                             }
 
-                            // Check if the current user has a "Cart" property
+                            
                             if (jsonElement.TryGetProperty("Cart", out var cartProperty) && cartProperty.ValueKind == JsonValueKind.Array)
                             {
-                                // Deserialize the cart as a List<Product>
+                               
                                 var products = new List<Product>();
                                 foreach (var productElement in cartProperty.EnumerateArray())
                                 {
@@ -164,7 +164,7 @@ public static class UserManager
                                     products.Add(product);
                                 }
 
-                                // Assign the cart to the user
+                                
                                 a.Cart = products;
                             }
                         }
@@ -175,7 +175,7 @@ public static class UserManager
                     }
                 }
             }
-            UserListChanged.Invoke();
+            
         
 
     }
@@ -231,6 +231,6 @@ public static class UserManager
                 }
             }
         }
-        UserListChanged.Invoke();
+        
     }
 }

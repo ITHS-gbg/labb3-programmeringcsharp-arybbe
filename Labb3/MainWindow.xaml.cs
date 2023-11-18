@@ -17,8 +17,13 @@ namespace Labb3ProgTemplate
             ShopTab.Visibility = Visibility.Collapsed;
             LoginTab.Visibility = Visibility.Visible;
             UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
+            UserManager.UserLoggedOut += UserManager_UserLoggedOut;
+            UserManager.UserListChanged += UserManager_UserListChanged;
+        }
 
-            UserManager.SaveUsersToFile();
+        private void UserManager_UserListChanged()
+        {
+            
         }
 
         private void UserManager_CurrentUserChanged()
