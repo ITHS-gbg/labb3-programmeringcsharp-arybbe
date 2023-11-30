@@ -97,7 +97,21 @@ namespace Labb3ProgTemplate.Views
 
         private void RemoveBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            
+            if (ProdList.SelectedItem is BaseProduct selectedItem)
+            {
+                var selectedProd = AdminWindowContext.ProductList.FirstOrDefault(p => p.Name == selectedItem.Name);
+
+                if (selectedProd is null)
+                {
+                    return;
+                }
+
+                ProductManager.RemoveProduct(selectedItem);
+                AdminWindowContext.ProductList.Remove(selectedItem);
+            }
+
+            AdminWindowContext.ProdName = string.Empty;
+            AdminWindowContext.ProdPrice = string.Empty;
         }
 
         private void LogoutBtn_Click(object sender, System.Windows.RoutedEventArgs e)

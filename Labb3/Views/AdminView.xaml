@@ -126,24 +126,7 @@
                     IsChecked="{Binding Path=IsFood, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
 
-                <Label
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Content="Product Location" />
-                <RadioButton
-                    Name="ShopRadio"
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    Content="Shop"
-                    GroupName="ProductLocation"
-                    IsChecked="{Binding Path=IsInShop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <RadioButton
-                    Name="StorageRadio"
-                    Grid.Row="3"
-                    Grid.Column="0"
-                    Content="Storage"
-                    GroupName="ProductLocation"
-                    IsChecked="{Binding Path=IsInStorage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                 
             </Grid>
 
 

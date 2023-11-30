@@ -43,7 +43,6 @@ public static class UserManager
     public static bool IsAdminLoggedIn => CurrentUser.Type is UserTypes.Admin;
 
 
-
     public static void ChangeCurrentUser(string name, string password, UserTypes type)
     {
         User user = Users.FirstOrDefault(u => u.Name == name && u.Password == password && u.Type == type);
@@ -55,6 +54,8 @@ public static class UserManager
         }
 
     }
+
+    
 
     public static void LogOut()
     {

@@ -105,8 +105,46 @@ namespace Labb3ProgTemplate.Views
 
         private void CheckoutBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            UserManager.LogOut();
+            string output = string.Empty;
+            output += $"{UserManager.CurrentUser.Name} Cart: \n";
+
+            var productcount = new Dictionary<BaseProduct, int>();
+
+            foreach (var baseProduct in UserManager.CurrentUser.Cart)
+            {
+                if (productcount.ContainsKey(baseProduct))
+                {
+                    productcount[baseProduct]++;
+                }
+                else
+                {
+                    productcount[baseProduct] = 1;
+                }
+            }
+
+            foreach (var i in productcount)
+            {
+                
+                var product = i.Key;
+                var count = i.Value;
+                double subTotal = product.Price * count;
+
+                output += $"{product.Name} {count}st {product.Price}kr/st = {subTotal}kr\n";
+            }
+
+            double totalSum = 0;
+            foreach (var baseProduct in UserManager.CurrentUser.Cart)
+            {
+                totalSum += baseProduct.Price;
+            }
+
+
+            output += $"Total: {totalSum}\n";
+            
+
+            MessageBox.Show(output);
             UserManager.CurrentUser.Cart.Clear();
+            UserManager.LogOut();
         }
 
         private void ProdList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

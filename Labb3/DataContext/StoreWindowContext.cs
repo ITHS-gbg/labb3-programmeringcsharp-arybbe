@@ -8,14 +8,7 @@ namespace Labb3ProgTemplate.DataContext;
 
 public class StoreWindowContext : INotifyPropertyChanged
 {
-    private int myVar;
-
-    public int MyProperty
-    {
-        get { return myVar; }
-        set { myVar = value; }
-    }
-
+    
 
 
     public ObservableCollection<BaseProduct> CartProducts { get; set; } = new();

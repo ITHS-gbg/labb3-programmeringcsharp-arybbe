@@ -57,30 +57,7 @@ public class AdminWindowContext : INotifyPropertyChanged
         }
     }
 
-    private bool _isInStorage;
-
-    public bool IsInStorage
-    {
-        get { return _isInStorage; }
-        set
-        {
-            _isInStorage = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private bool _isInShop;
-
-    public bool IsInShop
-    {
-        get { return _isInShop; }
-        set
-        {
-            _isInShop = value;
-            OnPropertyChanged();
-        }
-    }
-
+    
 
 
     public ObservableCollection<BaseProduct> ProductList { get; set; } = new();
