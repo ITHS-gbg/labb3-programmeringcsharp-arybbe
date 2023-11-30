@@ -18,13 +18,9 @@ namespace Labb3ProgTemplate
             LoginTab.Visibility = Visibility.Visible;
             UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
             UserManager.UserLoggedOut += UserManager_UserLoggedOut;
-            UserManager.UserListChanged += UserManager_UserListChanged;
         }
 
-        private void UserManager_UserListChanged()
-        {
-            
-        }
+        
 
         private void UserManager_CurrentUserChanged()
         {

@@ -7,7 +7,7 @@ using Labb3ProgTemplate.Managerrs;
 
 namespace Labb3ProgTemplate;
 
-public class AllWindowContext : INotifyPropertyChanged
+public class StoreWindowContext : INotifyPropertyChanged
 {
     private string _prodName;
 
@@ -33,9 +33,57 @@ public class AllWindowContext : INotifyPropertyChanged
         }
     }
 
+    private bool _isToy;
+
+    public bool IsToy
+    {
+        get { return _isToy; }
+        set
+        {
+            _isToy = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isFood;
+
+    public bool IsFood
+    {
+        get { return _isFood; }
+        set
+        {
+            _isFood = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isInStorage;
+
+    public bool IsInStorage
+    {
+        get { return _isInStorage; }
+        set
+        {
+            _isInStorage = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isInShop;
+
+    public bool IsInShop
+    {
+        get { return _isInShop; }
+        set
+        {
+            _isInShop = value;
+            OnPropertyChanged();
+        }
+    }
+    
 
 
-    public ObservableCollection<Product> Products { get; set; } = new();
+    public ObservableCollection<Product> ProductList { get; set; } = new();
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

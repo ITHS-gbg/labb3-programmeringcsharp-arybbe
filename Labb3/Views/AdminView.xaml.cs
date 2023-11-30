@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using Labb3ProgTemplate.DataModels.Products;
@@ -14,11 +15,19 @@ namespace Labb3ProgTemplate.Views
     {
         
 
+        public StoreWindowContext StoreWindowContext { get; set; }
+
         public AdminView()
         {
-            DataContext = this;
-
             InitializeComponent();
+            StoreWindowContext = new StoreWindowContext();
+            DataContext = StoreWindowContext;
+            
+            foreach (var product in ProductManager.Products)
+            {
+                ProdList.Items.Add(product);
+            }
+
             UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
         }
 
@@ -29,21 +38,45 @@ namespace Labb3ProgTemplate.Views
         
         private void ProdList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+            if (ProdList.SelectedItem is Product selectedItem)
+            {
+                StoreWindowContext.ProdName = selectedItem.Name;
+                StoreWindowContext.ProdPrice = selectedItem.Price.ToString();
+            }
         }
 
         private void SaveBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var productName = ProductName.Text;
-            var productPrice = ProductPrice.Text;
+            var productList = (ObservableCollection<Product>)ProdList.ItemsSource;
+            
+            var productName = StoreWindowContext.ProdName;
+            var productPrice = StoreWindowContext.ProdPrice;
+
+            if (StoreWindowContext.IsFood && StoreWindowContext.IsToy is null)
+            {
+                
+            }
 
             if (!string.IsNullOrEmpty(productName) || !string.IsNullOrEmpty(productPrice))
             {
-                var product = new Food(productName, double.Parse(productPrice));
-                ProductManager.AddProduct(product);
+                if (StoreWindowContext.IsToy)
+                {
+                    var toyProduct = new Toy(productName, double.Parse(productPrice));
+                    productList.Add(toyProduct);
+                    ProductManager.AddProduct(toyProduct);
+                }
+
+                if (StoreWindowContext.IsFood)
+                {
+                    var foodProduct = new Food(productName, double.Parse(productPrice));
+                    productList.Add(foodProduct);
+                    ProductManager.AddProduct(foodProduct);
+                }
             }
 
-            
+            StoreWindowContext.ProdName = string.Empty;
+            StoreWindowContext.ProdPrice = string.Empty;
+
         }
 
         private void RemoveBtn_Click(object sender, System.Windows.RoutedEventArgs e)

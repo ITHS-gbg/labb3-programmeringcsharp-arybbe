@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:labb3progtemplate="clr-namespace:Labb3ProgTemplate" d:DataContext="{d:DesignInstance Type=labb3progtemplate:StoreWindowContext}"
     Width="800"
     Height="450"
     FontSize="20"
@@ -30,10 +30,18 @@
             Name="ProdList"
             Grid.Row="2"
             Grid.Column="1"
-            DisplayMemberPath="{Binding Name}"
-            ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+            ItemsSource="{Binding ProductList, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             SelectionChanged="ProdList_OnSelectionChanged"
-            SelectionMode="Single" />
+            SelectionMode="Single">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold"></TextBlock>
+                        <TextBlock Text="{Binding Price}"></TextBlock>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <Button
             Name="RemoveBtn"
             Grid.Row="3"
@@ -56,6 +64,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Label Content="Name" />
             <TextBox
@@ -81,6 +90,61 @@
                 Click="SaveBtn_Click">
                 Save/Add
             </Button>
+
+            <Grid Grid.Row="3" Grid.Column="1">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Content="Product Type" />
+                <RadioButton
+                    Name="ToyRadio"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Content="Toy"
+                    GroupName="ProductType"
+                    IsChecked="{Binding Path=IsToy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <RadioButton
+                    Name="FoodRadio"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Content="Food"
+                    GroupName="ProductType"
+                    IsChecked="{Binding Path=IsFood, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Content="Product Location" />
+                <RadioButton
+                    Name="ShopRadio"
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Content="Shop"
+                    GroupName="ProductLocation"
+                    IsChecked="{Binding Path=IsInShop, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <RadioButton
+                    Name="StorageRadio"
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Content="Storage"
+                    GroupName="ProductLocation"
+                    IsChecked="{Binding Path=IsInStorage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+
+
         </Grid>
         <Button
             Name="LogoutBtn"

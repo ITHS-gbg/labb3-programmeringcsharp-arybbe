@@ -2,13 +2,13 @@
 
 namespace Labb3ProgTemplate.DataModels.Products;
 
-public class Food : Product
+public class Toy : Product
 {
     public override ProductTypes Type { get; }
 
-    public Food(string name, double price) : base(name, price)
+    public Toy(string name, double price) : base(name, price)
     {
-        Type = ProductTypes.Food;
+        Type = ProductTypes.Toy;
     }
 
 }

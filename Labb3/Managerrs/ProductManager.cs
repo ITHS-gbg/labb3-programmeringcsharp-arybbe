@@ -88,11 +88,11 @@ public static class ProductManager
                                         foodList.Add(a);
                                     }
                                     break;
-                                case nameof(Electronic):
-                                    a = jsonElement.Deserialize<Electronic>();
-                                    if (_products is List<Product> elecList)
+                                case nameof(Toy):
+                                    a = jsonElement.Deserialize<Toy>();
+                                    if (_products is List<Product> toyList)
                                     {
-                                        elecList.Add(a);
+                                        toyList.Add(a);
                                     }
                                     break;
                                 default:
