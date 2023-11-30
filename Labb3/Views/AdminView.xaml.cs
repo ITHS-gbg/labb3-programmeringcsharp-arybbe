@@ -52,9 +52,10 @@ namespace Labb3ProgTemplate.Views
             var productName = StoreWindowContext.ProdName;
             var productPrice = StoreWindowContext.ProdPrice;
 
-            if (StoreWindowContext.IsFood && StoreWindowContext.IsToy is null)
+            if (!StoreWindowContext.IsFood && !StoreWindowContext.IsToy)
             {
-                
+                MessageBox.Show("Choose which product type!");
+                return;
             }
 
             if (!string.IsNullOrEmpty(productName) || !string.IsNullOrEmpty(productPrice))
