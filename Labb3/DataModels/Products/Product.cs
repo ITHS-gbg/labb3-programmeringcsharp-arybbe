@@ -16,5 +16,5 @@ public abstract class Product
         Price = price;
     }
 
-    public abstract void Update(Product product);
+    
 }

@@ -25,6 +25,7 @@ public static class UserManager
         set
         {
             _currentUser = value;
+            CartChanged?.Invoke();
             CurrentUserChanged?.Invoke();
         }
     }
@@ -36,6 +37,8 @@ public static class UserManager
     public static event Action UserListChanged;
 
     public static event Action UserLoggedOut;
+
+    public static event Action CartChanged;
 
     public static bool IsAdminLoggedIn => CurrentUser.Type is UserTypes.Admin;
 
@@ -155,40 +158,8 @@ public static class UserManager
                                 continue;
                         }
 
-                        if (jsonElement.TryGetProperty("Cart", out var cartProperty) && cartProperty.ValueKind == JsonValueKind.Array)
-                        {
-                            
-                            a.Cart = new List<Product>();
 
-                            var cartArray = cartProperty.EnumerateArray();
-                            foreach (var cartItem in cartArray)
-                            {
-                                if (cartItem.TryGetProperty("Type", out var ptypeProperty))
-                                {
-                                    int productTypeValue = ptypeProperty.GetInt32();
-                                    Product p;
-
-                                    ProductTypes productType = (ProductTypes)productTypeValue;
-
-                                    switch (productType)
-                                    {
-                                        case ProductTypes.Food:
-                                            p = cartItem.Deserialize<Food>();
-                                            a.Cart.Add(p);
-                                            break;
-                                        case ProductTypes.Toy:
-                                            p = cartItem.Deserialize<Toy>();
-                                            a.Cart.Add(p);
-                                            break;
-                                        default:
-                                            MessageBox.Show($"Unknown product type: {productTypeValue}");
-                                            break;
-                                    }
-                                }
-                            }
-                        }
-
-
+                        
                     }
                     else
                     {

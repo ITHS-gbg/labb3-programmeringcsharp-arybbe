@@ -2,7 +2,7 @@
 
 namespace Labb3ProgTemplate.DataModels.Products;
 
-public class Toy : Product
+public class Toy : BaseProduct
 {
     public override ProductTypes Type { get; set; }
     
@@ -12,8 +12,5 @@ public class Toy : Product
         Type = ProductTypes.Toy;
     }
 
-    public override void Update(Product product)
-    {
-
-    }
+    
 }

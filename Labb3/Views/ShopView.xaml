@@ -29,7 +29,7 @@
             Content="Products" />
         <ListBox
             Name="ProdList"
-            ItemsSource="{Binding Products, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+            ItemsSource="{Binding ProductList, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             Grid.Row="2"
             Grid.Column="1"
             SelectionChanged="ProdList_OnSelectionChanged"
@@ -61,7 +61,7 @@
             ItemsSource="{Binding CartProducts, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
             Grid.Row="2"
             Grid.Column="2"
-            SelectionChanged="ProdList_OnSelectionChanged"
+            SelectionChanged="CartList_OnSelectionChanged"
             SelectionMode="Single">
             <ListBox.ItemTemplate>
                 <DataTemplate>

@@ -83,7 +83,7 @@ public class AdminWindowContext : INotifyPropertyChanged
 
 
 
-    public ObservableCollection<Product> ProductList { get; set; } = new();
+    public ObservableCollection<BaseProduct> ProductList { get; set; } = new();
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

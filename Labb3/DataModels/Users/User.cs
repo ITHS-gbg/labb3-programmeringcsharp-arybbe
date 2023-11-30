@@ -12,7 +12,7 @@ public abstract class User
 
     public abstract UserTypes Type { get; }
 
-    public abstract List<Product> Cart { get; set; }
+    public abstract List<BaseProduct> Cart { get; set; }
     
     protected User(string name, string password)
     {

@@ -28,7 +28,7 @@ namespace Labb3ProgTemplate.Views
 
             foreach (var product in ProductManager.Products)
             {
-                AdminWindowContext.ProductList.Add(product);
+                AdminWindowContext.ProductList.Add(product as BaseProduct);
             }
             
 
@@ -42,7 +42,7 @@ namespace Labb3ProgTemplate.Views
             
             foreach (var product in ProductManager.Products)
             {
-                AdminWindowContext.ProductList.Add(product);
+                AdminWindowContext.ProductList.Add(product as BaseProduct);
             }
         }
 

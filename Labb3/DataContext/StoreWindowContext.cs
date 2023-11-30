@@ -18,8 +18,8 @@ public class StoreWindowContext : INotifyPropertyChanged
 
 
 
-    public ObservableCollection<Product> CartProducts { get; set; } = new();
-    public ObservableCollection<Product> Products { get; set; } = new();
+    public ObservableCollection<BaseProduct> CartProducts { get; set; } = new();
+    public ObservableCollection<BaseProduct> ProductList { get; set; } = new();
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
