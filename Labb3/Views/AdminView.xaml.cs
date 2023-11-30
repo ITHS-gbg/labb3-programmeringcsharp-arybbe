@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Labb3ProgTemplate.DataContext;
 using Labb3ProgTemplate.DataModels.Products;
+using Labb3ProgTemplate.DataModels.Users;
 using Labb3ProgTemplate.Enums;
 using Labb3ProgTemplate.Managerrs;
 
@@ -15,20 +18,32 @@ namespace Labb3ProgTemplate.Views
     {
         
 
-        public StoreWindowContext StoreWindowContext { get; set; }
+        public AdminWindowContext AdminWindowContext { get; set; }
 
         public AdminView()
         {
             InitializeComponent();
-            StoreWindowContext = new StoreWindowContext();
-            DataContext = StoreWindowContext;
+            AdminWindowContext = new AdminWindowContext();
+            DataContext = AdminWindowContext;
+
+            foreach (var product in ProductManager.Products)
+            {
+                AdminWindowContext.ProductList.Add(product);
+            }
+            
+
+            UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
+            ProductManager.ProductListChanged += ProductManager_ProductListChanged;
+        }
+
+        private void ProductManager_ProductListChanged()
+        {
+            AdminWindowContext.ProductList.Clear();
             
             foreach (var product in ProductManager.Products)
             {
-                ProdList.Items.Add(product);
+                AdminWindowContext.ProductList.Add(product);
             }
-
-            UserManager.CurrentUserChanged += UserManager_CurrentUserChanged;
         }
 
         private void UserManager_CurrentUserChanged()
@@ -40,43 +55,43 @@ namespace Labb3ProgTemplate.Views
         {
             if (ProdList.SelectedItem is Product selectedItem)
             {
-                StoreWindowContext.ProdName = selectedItem.Name;
-                StoreWindowContext.ProdPrice = selectedItem.Price.ToString();
+                AdminWindowContext.ProdName = selectedItem.Name;
+                AdminWindowContext.ProdPrice = selectedItem.Price.ToString();
             }
         }
 
         private void SaveBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            var productList = (ObservableCollection<Product>)ProdList.ItemsSource;
             
-            var productName = StoreWindowContext.ProdName;
-            var productPrice = StoreWindowContext.ProdPrice;
+            var productName = AdminWindowContext.ProdName;
+            var productPrice = AdminWindowContext.ProdPrice;
 
-            if (!StoreWindowContext.IsFood && !StoreWindowContext.IsToy)
+            if (!AdminWindowContext.IsFood && !AdminWindowContext.IsToy)
             {
                 MessageBox.Show("Choose which product type!");
                 return;
             }
 
+            
+
             if (!string.IsNullOrEmpty(productName) || !string.IsNullOrEmpty(productPrice))
             {
-                if (StoreWindowContext.IsToy)
+                if (AdminWindowContext.IsToy)
                 {
+                    
                     var toyProduct = new Toy(productName, double.Parse(productPrice));
-                    productList.Add(toyProduct);
                     ProductManager.AddProduct(toyProduct);
                 }
 
-                if (StoreWindowContext.IsFood)
+                if (AdminWindowContext.IsFood)
                 {
                     var foodProduct = new Food(productName, double.Parse(productPrice));
-                    productList.Add(foodProduct);
                     ProductManager.AddProduct(foodProduct);
                 }
             }
 
-            StoreWindowContext.ProdName = string.Empty;
-            StoreWindowContext.ProdPrice = string.Empty;
+            AdminWindowContext.ProdName = string.Empty;
+            AdminWindowContext.ProdPrice = string.Empty;
 
         }
 

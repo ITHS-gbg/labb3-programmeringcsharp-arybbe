@@ -8,11 +8,13 @@ public abstract class Product
 
     public double Price { get; set; }
 
-    public abstract ProductTypes Type { get; }
+    public abstract ProductTypes Type { get; set; }
 
     protected Product(string name, double price)
     {
         Name = name;
         Price = price;
     }
+
+    public abstract void Update(Product product);
 }

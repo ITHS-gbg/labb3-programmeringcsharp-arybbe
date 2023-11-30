@@ -5,9 +5,9 @@ using System.Runtime.CompilerServices;
 using Labb3ProgTemplate.DataModels.Products;
 using Labb3ProgTemplate.Managerrs;
 
-namespace Labb3ProgTemplate;
+namespace Labb3ProgTemplate.DataContext;
 
-public class StoreWindowContext : INotifyPropertyChanged
+public class AdminWindowContext : INotifyPropertyChanged
 {
     private string _prodName;
 
@@ -80,7 +80,7 @@ public class StoreWindowContext : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-    
+
 
 
     public ObservableCollection<Product> ProductList { get; set; } = new();

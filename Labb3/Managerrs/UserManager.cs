@@ -19,11 +19,11 @@ public static class UserManager
 
     public static IEnumerable<User>? Users => _users;
 
-    public static User CurrentUser  
+    public static User CurrentUser
     {
         get => _currentUser;
         set
-        { 
+        {
             _currentUser = value;
             CurrentUserChanged?.Invoke();
         }
@@ -39,7 +39,7 @@ public static class UserManager
 
     public static bool IsAdminLoggedIn => CurrentUser.Type is UserTypes.Admin;
 
-    
+
 
     public static void ChangeCurrentUser(string name, string password, UserTypes type)
     {
@@ -64,7 +64,7 @@ public static class UserManager
     {
         if (_users is List<User> users)
         {
-            
+
             if (users.Any(existingUser => existingUser.Name == customer.Name))
             {
                 MessageBox.Show("Username already taken!");
@@ -72,6 +72,7 @@ public static class UserManager
             }
             users.Add(customer);
         }
+        UserListChanged?.Invoke();
         return true;
     }
 
@@ -86,6 +87,7 @@ public static class UserManager
             }
             users.Add(admin);
         }
+        UserListChanged?.Invoke();
         return true;
     }
 
@@ -97,92 +99,21 @@ public static class UserManager
         var jsonOptions = new JsonSerializerOptions();
         jsonOptions.WriteIndented = true;
 
-        
+
         var distinctUsers = Users.GroupBy(u => u.Name).Select(g => g.First()).ToList();
         var json = JsonSerializer.Serialize(distinctUsers, jsonOptions);
 
         using var sw = new StreamWriter(usersFilePath);
         sw.WriteLine(json);
 
-        
-        await ProductManager.SaveProductsToFile();
+
+        UserListChanged?.Invoke();
     }
 
 
     public static async Task LoadUsersFromFile()
     {
-        
-            var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Labb 3 Listor");
-            Directory.CreateDirectory(directory);
-            var usersListsFilePath = Path.Combine(directory, "UsersList.json");
 
-            if (File.Exists(usersListsFilePath))
-            {
-                var jsonContent = File.ReadAllText(usersListsFilePath);
-                using var jsonDoc = JsonDocument.Parse(jsonContent);
-
-                if (jsonDoc.RootElement.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var jsonElement in jsonDoc.RootElement.EnumerateArray())
-                    {
-                        if (jsonElement.TryGetProperty("Type", out var typeProperty) && typeProperty.ValueKind == JsonValueKind.Number)
-                        {
-                            int userTypeValue = typeProperty.GetInt32();
-                            User a;
-
-                            UserTypes userType = (UserTypes)userTypeValue;
-
-                            switch (userType)
-                            {
-                                case UserTypes.Admin:
-                                    a = jsonElement.Deserialize<Admin>();
-                                    if (_users is List<User> userAdmin)
-                                    {
-                                        userAdmin.Add(a);
-                                    }
-                                    break;
-                                case UserTypes.Customer:
-                                    a = jsonElement.Deserialize<Customer>();
-                                    if (_users is List<User> userCustomer)
-                                    {
-                                        userCustomer.Add(a);
-                                    }
-                                    break;
-                                default:
-                                    MessageBox.Show($"Unknown user type: {userType}");
-                                    continue; 
-                            }
-
-                            
-                            if (jsonElement.TryGetProperty("Cart", out var cartProperty) && cartProperty.ValueKind == JsonValueKind.Array)
-                            {
-                               
-                                var products = new List<Product>();
-                                foreach (var productElement in cartProperty.EnumerateArray())
-                                {
-                                    var product = productElement.Deserialize<Product>();
-                                    products.Add(product);
-                                }
-
-                                
-                                a.Cart = products;
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Type property not found or not a number in JSON element");
-                        }
-                    }
-                }
-            }
-            
-        
-
-    }
-
-
-    public static void Test()
-    {
         var directory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Labb 3 Listor");
         Directory.CreateDirectory(directory);
         var usersListsFilePath = Path.Combine(directory, "UsersList.json");
@@ -221,8 +152,43 @@ public static class UserManager
                                 break;
                             default:
                                 MessageBox.Show($"Unknown user type: {userType}");
-                                break;
+                                continue;
                         }
+
+                        if (jsonElement.TryGetProperty("Cart", out var cartProperty) && cartProperty.ValueKind == JsonValueKind.Array)
+                        {
+                            
+                            a.Cart = new List<Product>();
+
+                            var cartArray = cartProperty.EnumerateArray();
+                            foreach (var cartItem in cartArray)
+                            {
+                                if (cartItem.TryGetProperty("Type", out var ptypeProperty))
+                                {
+                                    int productTypeValue = ptypeProperty.GetInt32();
+                                    Product p;
+
+                                    ProductTypes productType = (ProductTypes)productTypeValue;
+
+                                    switch (productType)
+                                    {
+                                        case ProductTypes.Food:
+                                            p = cartItem.Deserialize<Food>();
+                                            a.Cart.Add(p);
+                                            break;
+                                        case ProductTypes.Toy:
+                                            p = cartItem.Deserialize<Toy>();
+                                            a.Cart.Add(p);
+                                            break;
+                                        default:
+                                            MessageBox.Show($"Unknown product type: {productTypeValue}");
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+
+
                     }
                     else
                     {
@@ -231,6 +197,9 @@ public static class UserManager
                 }
             }
         }
-        
+        UserListChanged?.Invoke();
+
+
     }
+
 }

@@ -21,15 +21,31 @@ public static class ProductManager
 
     static ProductManager()
     {
-        
+        if (_products is List<Product> pr)
+        {
+            
+        }
     }
 
     public static void AddProduct(Product product)
     {
         if (_products is List<Product> products)
         {
-            products.Add(product);
+            Product existingProduct = products.FirstOrDefault(p => p.Name == product.Name);
+            if (existingProduct != null)
+            {
+                existingProduct.Name = product.Name;
+                existingProduct.Price = product.Price;
+                existingProduct.Type = product.Type;
+            }
+            else
+            {
+                products.Add(product);
+            }
+            
+            ProductListChanged?.Invoke();
         }
+       
     }
 
     public static void RemoveProduct(Product product)
@@ -37,8 +53,11 @@ public static class ProductManager
         if (_products is List<Product> products)
         {
             products.Remove(product);
+            ProductListChanged?.Invoke();
         }
     }
+
+    
 
     public static async Task SaveProductsToFile()
     {
@@ -55,7 +74,7 @@ public static class ProductManager
         using var sw = new StreamWriter(productsFilePath);
         sw.WriteLine(json);
         
-        await UserManager.SaveUsersToFile();
+        ProductListChanged?.Invoke();
     }
 
     public static async Task LoadProductsFromFile()
@@ -74,21 +93,23 @@ public static class ProductManager
                 {
                     foreach (var jsonElement in jsonDoc.RootElement.EnumerateArray())
                     {
-                        if (jsonElement.TryGetProperty("Type", out var typeProperty) && typeProperty.ValueKind == JsonValueKind.String)
+                        if (jsonElement.TryGetProperty("Type", out var typeProperty) && typeProperty.ValueKind == JsonValueKind.Number)
                         {
-                            string productType = typeProperty.GetString();
+                            int productTypeValue = typeProperty.GetInt32();
                             Product a;
 
-                            switch (productType)
+                            ProductTypes productTypes = (ProductTypes)productTypeValue;
+
+                            switch (productTypes)
                             {
-                                case nameof(Food):
+                                case ProductTypes.Food:
                                     a = jsonElement.Deserialize<Food>();
                                     if (_products is List<Product> foodList)
                                     {
                                         foodList.Add(a);
                                     }
                                     break;
-                                case nameof(Toy):
+                                case ProductTypes.Toy:
                                     a = jsonElement.Deserialize<Toy>();
                                     if (_products is List<Product> toyList)
                                     {
@@ -96,7 +117,7 @@ public static class ProductManager
                                     }
                                     break;
                                 default:
-                                    MessageBox.Show($"Unknown product type: {productType}");
+                                    MessageBox.Show($"Unknown product type: {productTypeValue}");
                                     break;
                             }
                         }
@@ -106,9 +127,11 @@ public static class ProductManager
                         }
                     }
                 }
+                
+
             }
             
-            await UserManager.LoadUsersFromFile();
+            ProductListChanged?.Invoke();
         
 
     }
