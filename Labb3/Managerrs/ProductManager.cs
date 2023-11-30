@@ -19,13 +19,6 @@ public static class ProductManager
     // Skicka detta efter att produktlistan ändrats eller lästs in
     public static event Action ProductListChanged;
 
-    static ProductManager()
-    {
-        if (_products is List<Product> pr)
-        {
-            
-        }
-    }
 
     public static void AddProduct(Product product)
     {
@@ -128,6 +121,15 @@ public static class ProductManager
                     }
                 }
                 
+
+            }
+            else
+            {
+                var prod1 = new Food("Apple", 5);
+                if (_products is List<Product> pr)
+                {
+                    pr.Add(prod1);
+                }
 
             }
             
